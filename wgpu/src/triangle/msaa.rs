@@ -34,7 +34,7 @@ impl Blit {
                     visibility: wgpu::ShaderStage::FRAGMENT,
                     ty: wgpu::BindingType::Sampler {
                         comparison: false,
-                        filtering: false,
+                        filtering: true,
                     },
                     count: None,
                 }],
