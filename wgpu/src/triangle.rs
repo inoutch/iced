@@ -110,13 +110,7 @@ impl Pipeline {
                 layout: &constants_layout,
                 entries: &[wgpu::BindGroupEntry {
                     binding: 0,
-                    resource: wgpu::BindingResource::Buffer {
-                        buffer: &constants_buffer.raw,
-                        offset: 0,
-                        size: wgpu::BufferSize::new(
-                            std::mem::size_of::<Uniforms>() as u64,
-                        ),
-                    },
+                    resource: constants_buffer.raw.as_entire_binding(),
                 }],
             });
 
@@ -149,13 +143,13 @@ impl Pipeline {
                             // Position
                             wgpu::VertexAttribute {
                                 shader_location: 0,
-                                format: wgpu::VertexFormat::Float2,
+                                format: wgpu::VertexFormat::Float32x2,
                                 offset: 0,
                             },
                             // Color
                             wgpu::VertexAttribute {
                                 shader_location: 1,
-                                format: wgpu::VertexFormat::Float4,
+                                format: wgpu::VertexFormat::Float32x4,
                                 offset: 4 * 2,
                             },
                         ],
@@ -166,23 +160,25 @@ impl Pipeline {
                     entry_point: "main",
                     targets: &[wgpu::ColorTargetState {
                         format,
-                        color_blend: wgpu::BlendState {
-                            src_factor: wgpu::BlendFactor::SrcAlpha,
-                            dst_factor: wgpu::BlendFactor::OneMinusSrcAlpha,
-                            operation: wgpu::BlendOperation::Add,
-                        },
-                        alpha_blend: wgpu::BlendState {
-                            src_factor: wgpu::BlendFactor::One,
-                            dst_factor: wgpu::BlendFactor::OneMinusSrcAlpha,
-                            operation: wgpu::BlendOperation::Add,
-                        },
+                        blend: Some(wgpu::BlendState {
+                            color: wgpu::BlendComponent {
+                                src_factor: wgpu::BlendFactor::SrcAlpha,
+                                dst_factor: wgpu::BlendFactor::OneMinusSrcAlpha,
+                                operation: wgpu::BlendOperation::Add,
+                            },
+                            alpha: wgpu::BlendComponent {
+                                src_factor: wgpu::BlendFactor::One,
+                                dst_factor: wgpu::BlendFactor::OneMinusSrcAlpha,
+                                operation: wgpu::BlendOperation::Add,
+                            },
+                        }),
                         write_mask: wgpu::ColorWrite::ALL,
                     }],
                 }),
                 primitive: wgpu::PrimitiveState {
                     topology: wgpu::PrimitiveTopology::TriangleList,
                     front_face: wgpu::FrontFace::Cw,
-                    cull_mode: wgpu::CullMode::None,
+                    cull_mode: None,
                     ..Default::default()
                 },
                 depth_stencil: None,
@@ -254,15 +250,7 @@ impl Pipeline {
                     layout: &self.constants_layout,
                     entries: &[wgpu::BindGroupEntry {
                         binding: 0,
-                        resource: wgpu::BindingResource::Buffer {
-                            buffer: &self.uniforms_buffer.raw,
-                            offset: 0,
-                            size: wgpu::BufferSize::new(std::mem::size_of::<
-                                Uniforms,
-                            >(
-                            )
-                                as u64),
-                        },
+                        resource: self.uniforms_buffer.raw.as_entire_binding(),
                     }],
                 });
         }
@@ -364,8 +352,8 @@ impl Pipeline {
                 encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                     label: Some("iced_wgpu::triangle render pass"),
                     color_attachments: &[
-                        wgpu::RenderPassColorAttachmentDescriptor {
-                            attachment,
+                        wgpu::RenderPassColorAttachment {
+                            view: attachment,
                             resolve_target,
                             ops: wgpu::Operations { load, store: true },
                         },

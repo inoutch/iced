@@ -180,7 +180,7 @@ where
                 bounds,
                 text_bounds,
                 cursor_position,
-                self.font,
+                self.font.clone(),
                 self.size.unwrap_or(renderer.default_size()),
                 &self.placeholder,
                 &value.secure(),
@@ -193,7 +193,7 @@ where
                 bounds,
                 text_bounds,
                 cursor_position,
-                self.font,
+                self.font.clone(),
                 self.size.unwrap_or(renderer.default_size()),
                 &self.placeholder,
                 value,
@@ -274,7 +274,7 @@ where
 
                                 let position = renderer.find_cursor_position(
                                     text_layout.bounds(),
-                                    self.font,
+                                    self.font.clone(),
                                     self.size,
                                     &value,
                                     &self.state,
@@ -294,7 +294,7 @@ where
                             } else {
                                 let position = renderer.find_cursor_position(
                                     text_layout.bounds(),
-                                    self.font,
+                                    self.font.clone(),
                                     self.size,
                                     &self.value,
                                     &self.state,
@@ -340,7 +340,7 @@ where
 
                         let position = renderer.find_cursor_position(
                             text_layout.bounds(),
-                            self.font,
+                            self.font.clone(),
                             self.size,
                             &value,
                             &self.state,
@@ -701,12 +701,12 @@ pub trait Renderer: text::Renderer + Sized {
     ) -> usize {
         let size = size.unwrap_or(self.default_size());
 
-        let offset = self.offset(text_bounds, font, size, &value, &state);
+        let offset = self.offset(text_bounds, font.clone(), size, &value, &state);
 
         find_cursor_position(
             self,
             &value,
-            font,
+            font.clone(),
             size,
             x + offset,
             0,
@@ -812,8 +812,8 @@ fn find_cursor_position<Renderer: self::Renderer>(
         let prev = value.until(start - 1);
         let next = value.until(start);
 
-        let prev_width = renderer.measure_value(&prev.to_string(), size, font);
-        let next_width = renderer.measure_value(&next.to_string(), size, font);
+        let prev_width = renderer.measure_value(&prev.to_string(), size, font.clone());
+        let next_width = renderer.measure_value(&next.to_string(), size, font.clone());
 
         if next_width - target > target - prev_width {
             return start - 1;
@@ -825,13 +825,13 @@ fn find_cursor_position<Renderer: self::Renderer>(
     let index = (end - start) / 2;
     let subvalue = value.until(start + index);
 
-    let width = renderer.measure_value(&subvalue.to_string(), size, font);
+    let width = renderer.measure_value(&subvalue.to_string(), size, font.clone());
 
     if width > target {
         find_cursor_position(
             renderer,
             value,
-            font,
+            font.clone(),
             size,
             target,
             start,

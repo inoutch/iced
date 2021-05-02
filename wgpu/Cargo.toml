@@ -26,8 +26,8 @@ qr_code = ["iced_graphics/qr_code"]
 default_system_font = ["iced_graphics/font-source"]
 
 [dependencies]
-wgpu = "0.7"
-wgpu_glyph = "0.11"
+wgpu = { git = "https://github.com/gfx-rs/wgpu-rs.git", rev = "ef2fa77536855e0b7ebdfb0df0eb879d9b7d3a1b", features = ["cross"] }
+wgpu_glyph = { git = "https://github.com/inoutch/wgpu_glyph", branch = "wgpu-latest" }
 glyph_brush = "0.7"
 raw-window-handle = "0.3"
 log = "0.4"

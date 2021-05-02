@@ -266,7 +266,7 @@ where
             self.selected.as_ref().map(ToString::to_string),
             self.padding,
             self.text_size.unwrap_or(renderer.default_size()),
-            self.font,
+            self.font.clone(),
             &self.style,
         )
     }
@@ -286,7 +286,7 @@ where
             )
             .width(bounds.width.round() as u16)
             .padding(self.padding)
-            .font(self.font)
+            .font(self.font.clone())
             .style(Renderer::menu_style(&self.style));
 
             if let Some(text_size) = self.text_size {

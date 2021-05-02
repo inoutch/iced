@@ -118,7 +118,7 @@ where
         let bounds = limits.max();
 
         let (width, height) =
-            renderer.measure(&self.content, size, self.font, bounds);
+            renderer.measure(&self.content, size, self.font.clone(), bounds);
 
         let size = limits.resolve(Size::new(width, height));
 
@@ -138,7 +138,7 @@ where
             layout.bounds(),
             &self.content,
             self.size.unwrap_or(renderer.default_size()),
-            self.font,
+            self.font.clone(),
             self.color,
             self.horizontal_alignment,
             self.vertical_alignment,
@@ -164,7 +164,7 @@ where
 /// [renderer]: crate::Renderer
 pub trait Renderer: crate::Renderer {
     /// The font type used for [`Text`].
-    type Font: Default + Copy;
+    type Font: Default + Clone;
 
     /// Returns the default size of [`Text`].
     fn default_size(&self) -> u16;
@@ -217,7 +217,7 @@ impl<Renderer: self::Renderer> Clone for Text<Renderer> {
             content: self.content.clone(),
             size: self.size,
             color: self.color,
-            font: self.font,
+            font: self.font.clone(),
             width: self.width,
             height: self.height,
             horizontal_alignment: self.horizontal_alignment,

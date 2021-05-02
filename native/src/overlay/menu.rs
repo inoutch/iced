@@ -393,7 +393,7 @@ where
             *self.hovered_option,
             self.padding,
             self.text_size.unwrap_or(renderer.default_size()),
-            self.font,
+            self.font.clone(),
             &self.style,
         )
     }
