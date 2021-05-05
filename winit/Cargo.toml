@@ -15,7 +15,7 @@ debug = ["iced_native/debug"]
 
 [dependencies]
 winit = "0.24"
-window_clipboard = "0.2"
+window_clipboard = { git = "https://github.com/inoutch/window_clipboard", branch = "fix/ios-clipboard" }
 log = "0.4"
 thiserror = "1.0"
 
