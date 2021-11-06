@@ -325,6 +325,8 @@ async fn run_instance<A, E, C>(
 
                 window.request_redraw();
             }
+            /*
+            // Unsupported event on origin winit
             event::Event::PlatformSpecific(event::PlatformSpecific::MacOS(
                 event::MacOS::ReceivedUrl(url),
             )) => {
@@ -335,6 +337,7 @@ async fn run_instance<A, E, C>(
                     )),
                 ));
             }
+            */
             event::Event::UserEvent(message) => {
                 messages.push(message);
             }
